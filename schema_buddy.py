@@ -1,22 +1,16 @@
-import yaml
-import os
+import copy
 import pandas as pd
 import numpy as np
-# from pandas_profiling import ProfileReport
-import copy
+import matplotlib as mpl
+from pandas_profiling import ProfileReport
 from janitor import transform_column, rename_columns, filter_column_isin, select_columns
 
+# for some reason, loading in padnas profling switches the backend to 'agg'
+mpl.use_backend()
 
 class SchemaBuddy():
     """
-    # desired functionality ?
-    schemabuddy.get_cols("boolean") # list of columns
-    schemabuddy.select_any_cols(df, "numerical") # returns a dataframe with these columns select
-    schemabuddy.select_all_cols(df, "numerical") # returns a dataframe with these columns select
-    def drop col?
-    def add col?
-    
-    Other features:? Drop for modeling. is_target.
+    Schema buddy helps you keep your dataframes and pipelines organized
     """
     def __init__(self, df, conf):
         self.vtypes = ["boolean", "numeric", "categorical"]
@@ -44,11 +38,9 @@ class SchemaBuddy():
             self.variables_summary
             .style
             .bar(align='mid', color=['#d65f5f', '#5fba7d'])
-            .set_na_rep(".")
-            .set_precision(3)
+            .format(na_rep=".", precision=3)
         )
         return styler
-    
     
     def _get_feature_types(self, summary):
         """use the variables summary df to set a dictionary of feature types"""
